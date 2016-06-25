@@ -1,6 +1,10 @@
 package com.kiwifisher.mobstacker.commands;
 
-import com.kiwifisher.mobstacker.MobStacker;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.Scanner;
+
 import org.apache.commons.io.FileUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -8,8 +12,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
-import java.io.*;
-import java.util.Scanner;
+
+import com.kiwifisher.mobstacker.MobStacker;
 
 public class MobStackerCommands implements CommandExecutor {
 
@@ -64,7 +68,7 @@ public class MobStackerCommands implements CommandExecutor {
                 if (getPlugin().getWorldGuard().getRegionManager(player.getWorld()).hasRegion(regionName) && nowStacking) {
 
                     try {
-                        FileUtils.writeStringToFile(excludedFile, (regionName + "\n"), true);
+                        FileUtils.writeStringToFile(excludedFile, (regionName + "\n"), Charset.defaultCharset(), true);
                         player.sendMessage(ChatColor.GREEN + "Mobs are now" + ChatColor.RED + " not " + ChatColor.GREEN + "stacking in " + regionName);
 
                         getPlugin().updateExcludedRegions();
@@ -87,7 +91,7 @@ public class MobStackerCommands implements CommandExecutor {
                             String line = reader.nextLine();
 
                             if (!line.contains(regionName)) {
-                                FileUtils.writeStringToFile(tempFile, line + "\n", true);
+                                FileUtils.writeStringToFile(tempFile, line + "\n", Charset.defaultCharset(), true);
                             } else {
                                 removedFromFile = true;
                             }

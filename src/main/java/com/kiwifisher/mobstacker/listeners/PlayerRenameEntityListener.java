@@ -2,6 +2,7 @@ package com.kiwifisher.mobstacker.listeners;
 
 import com.kiwifisher.mobstacker.MobStacker;
 import com.kiwifisher.mobstacker.utils.StackUtils;
+
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
@@ -17,7 +18,8 @@ public class PlayerRenameEntityListener implements Listener {
         this.plugin = plugin;
     }
 
-    @EventHandler
+    @SuppressWarnings("deprecation")
+	@EventHandler
     public void interactEvent(PlayerInteractEntityEvent event) {
 
         /*

@@ -33,7 +33,6 @@ public class StackUtils {
             int limit = searchTime / 10;
             boolean flop = true;
 
-            @Override
             public void run() {
 
                 /*
@@ -140,8 +139,6 @@ public class StackUtils {
                         List<Entity> nearbyEntities = entity.getNearbyEntities(getPlugin().getConfig().getInt("stack-range.x"), getPlugin().getConfig().getInt("stack-range.y"), getPlugin().getConfig().getInt("stack-range.z"));
 
                         for (Entity nearbyEntity : nearbyEntities) {
-
-                            int goAwayIntelliJ = 0;
 
                             int maxStackSize = 0;
 
@@ -371,7 +368,7 @@ public class StackUtils {
      * @return Bool representing if the mob can stack.
      */
     public static boolean hasRequiredData(Entity entity) {
-        return entity.hasMetadata("quantity") && entity.hasMetadata("max-stack");
+        return entity.hasMetadata("quantity") && entity.hasMetadata("max-stack") && !entity.getMetadata("spawn-reason").isEmpty();
     }
 
     /**
@@ -513,7 +510,7 @@ public class StackUtils {
         }
 
         // Check if spawn reason is allowed to cause stacking.
-        if (reason != null && !getPlugin().getConfig().getBoolean("stack-spawn-method." + reason)) {
+        if (reason != null && !getPlugin().getConfig().getBoolean("stack-spawn-method." + reason.name())) {
             return false;
         }
 
@@ -538,8 +535,6 @@ public class StackUtils {
 
     public void reviveStacks(Entity[] entities) {
 
-        List<String> types = getPlugin().getConfig().getStringList("load-existing-stacks.mob-types");
-
         for (Entity entity : entities) {
 
             // Check for a custom name and an approved type. If not, not an existing stack.
@@ -553,7 +548,7 @@ public class StackUtils {
             }
 
 
-            getPlugin().log(MobStacker.RELOAD_UUID + " and " + getPlugin().getLAST_USED_UUID());
+            //getPlugin().log(MobStacker.RELOAD_UUID + " and " + getPlugin().getLAST_USED_UUID());
             if (!entity.getCustomName().contains(MobStacker.RELOAD_UUID) && !entity.getCustomName().contains(getPlugin().getLAST_USED_UUID())) {
                 continue;
             }

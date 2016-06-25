@@ -2,8 +2,6 @@ package com.kiwifisher.mobstacker.listeners;
 
 import com.kiwifisher.mobstacker.MobStacker;
 import com.kiwifisher.mobstacker.utils.StackUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
@@ -11,10 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class ChunkChangeListener implements Listener {
 

@@ -34,8 +34,7 @@ public class SheepDyeListener implements Listener {
                 /*
                 Peel off the dyed sheep.
                  */
-                LivingEntity newEntity = getPlugin().getStackUtils().peelOffStack(entity, true);
-
+                //LivingEntity newEntity = getPlugin().getStackUtils().peelOffStack(entity, true);
             } else {
 
                 /*

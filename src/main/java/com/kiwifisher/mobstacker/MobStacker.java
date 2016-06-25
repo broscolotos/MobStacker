@@ -5,11 +5,9 @@ import com.kiwifisher.mobstacker.commands.MobStackerCommands;
 import com.kiwifisher.mobstacker.listeners.*;
 import com.kiwifisher.mobstacker.listeners.EntityTrackListener;
 import com.kiwifisher.mobstacker.utils.StackUtils;
-import com.sk89q.worldedit.util.YAMLConfiguration;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -112,7 +110,7 @@ public class MobStacker extends JavaPlugin {
 
             for (Entity entity : world.getEntities()) {
 
-                if (StackUtils.hasRequiredData(entity)) {
+                if (StackUtils.hasRequiredData(entity) && !entity.getMetadata("spawn-reason").isEmpty()) {
 
                     int quantity = StackUtils.getStackSize((LivingEntity) entity);
                     entity.setCustomName(quantity + "-" + MobStacker.RELOAD_UUID + "-" + entity.getMetadata("spawn-reason").get(0).asString());

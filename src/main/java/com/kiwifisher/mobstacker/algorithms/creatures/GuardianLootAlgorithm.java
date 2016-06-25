@@ -3,8 +3,6 @@ package com.kiwifisher.mobstacker.algorithms.creatures;
 import com.kiwifisher.mobstacker.algorithms.Loot;
 import com.kiwifisher.mobstacker.algorithms.LootAlgorithm;
 import org.bukkit.Material;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Guardian;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 

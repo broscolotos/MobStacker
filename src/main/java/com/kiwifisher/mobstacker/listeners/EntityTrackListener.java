@@ -1,13 +1,14 @@
 package com.kiwifisher.mobstacker.listeners;
 
-import com.kiwifisher.mobstacker.MobStacker;
-import org.bukkit.Bukkit;
+import java.util.List;
+
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityTargetEvent;
-import java.util.List;
+
+import com.kiwifisher.mobstacker.MobStacker;
 
 public class EntityTrackListener implements Listener {
 

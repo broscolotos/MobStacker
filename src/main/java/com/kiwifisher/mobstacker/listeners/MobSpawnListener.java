@@ -2,24 +2,11 @@ package com.kiwifisher.mobstacker.listeners;
 
 import com.kiwifisher.mobstacker.MobStacker;
 
-import com.kiwifisher.mobstacker.utils.StackUtils;
-import com.sk89q.worldguard.protection.managers.RegionManager;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.World;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
-import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.metadata.FixedMetadataValue;
-
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class MobSpawnListener implements Listener {
 
@@ -53,7 +40,7 @@ public class MobSpawnListener implements Listener {
          */
         if (!spawnedCreature.hasMetadata("spawn-reason")) {
 
-            spawnedCreature.setMetadata("spawn-reason", new FixedMetadataValue(getPlugin(), spawnReason));
+            spawnedCreature.setMetadata("spawn-reason", new FixedMetadataValue(getPlugin(), spawnReason.name()));
 
         }
 

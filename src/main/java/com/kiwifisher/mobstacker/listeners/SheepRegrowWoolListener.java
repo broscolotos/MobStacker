@@ -1,11 +1,11 @@
 package com.kiwifisher.mobstacker.listeners;
 
-import com.kiwifisher.mobstacker.MobStacker;
-import com.kiwifisher.mobstacker.utils.StackUtils;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.SheepRegrowWoolEvent;
+
+import com.kiwifisher.mobstacker.MobStacker;
 
 public class SheepRegrowWoolListener implements Listener {
 
