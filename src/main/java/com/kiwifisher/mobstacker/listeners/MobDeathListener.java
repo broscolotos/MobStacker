@@ -6,37 +6,29 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.material.Colorable;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.plugin.RegisteredListener;
 
 import java.util.List;
 
 public class MobDeathListener extends MobStackerListener {
 
 
-    @EventHandler (ignoreCancelled = true)
+    @EventHandler (ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void mobDeathListener(EntityDeathEvent event) {
-        /*
-        Checks that we are stacking.
-         */
+        //check if the plugin is active
         if (plugin.isStacking()) {
-            /*
-            Get the entity that has just died.
-             */
             LivingEntity entity = event.getEntity();
-            /*
-            If the entity was a stack, follow.
-             */
+
+            //if the entity was a stack:
             if (StackUtils.hasRequiredData(entity)) {
-                /*
-                The list of reasons that will kill the whole stack.
-                 */
                 List<String> validDeathReasons = plugin.getConfig().getStringList("kill-whole-stack-on-death.reasons");
-                /*
-                If the stack fell to it's death, and we are killing the full stack on death my fall damage, follow.
-                 */
+                //if the damage source was a fall:
                 if (event.getEntity().getLastDamageCause() != null && plugin.getConfig().getBoolean("kill-whole-stack-on-death.enable") && validDeathReasons.contains(event.getEntity().getLastDamageCause().getCause().name())) {
                     int quantity = StackUtils.getStackSize(entity);
                     /*
@@ -59,7 +51,7 @@ public class MobDeathListener extends MobStackerListener {
                             }
                             event.getDrops().addAll(AlgorithmEnum.valueOf(entity.getType().name()).getLootAlgorithm().getRandomLoot(entity, quantity - 1));
                             /*
-                            If this fails, then log which entity and request it's implementation.
+                            If this fails, then log which entity and request its implementation.
                              */
                         }
                         catch (Exception e) {
@@ -75,53 +67,40 @@ public class MobDeathListener extends MobStackerListener {
                     }
                     return;
                 }
-                /*
-                If the mob has died any way other than a listed damage, then follow.
-                 */
-                int newQuantity = StackUtils.getStackSize(entity) - 1;
+
+                //any other damage source:
+                int newStackSize = StackUtils.getStackSize(entity) - 1;
                 Location entityLocation = entity.getLocation();
                 EntityType entityType = entity.getType();
-                /*
-                Check if the entity is or was ever a max stack for continuity.
-                 */
                 boolean maxStack = entity.getMetadata("max-stack").get(0).asBoolean();
-                /*
-                If there is a remaining stack...
-                 */
-                if (newQuantity > 0) {
-                    /*
-                    Remove its quantity data so other mobs don't try stack to it is .isDead() fails.
-                     */
+
+                if (newStackSize > 0) {
+                    //remove the meta that allows mobs to stack to the entity that is dying; Entity.isDead() doesn't work yet
                     entity.removeMetadata("quantity", plugin);
-                    /*
-                    If it's a max stack, then don't try stack to anything around it.
-                     */
+
                     if (maxStack) {
                         plugin.setSearchTime(-50);
                     }
-                    /*
-                    Spawn in a replacement entity.
-                     */
+
+                    //spawn the replacement entity
                     LivingEntity newEntity = (LivingEntity) entity.getLocation().getWorld().spawnEntity(entityLocation, entityType);
                     /**
-                     * Mobs spawned by a blacklisted method will nto give mcmmo points.
+                     * Mobs spawned by a blacklisted method will not give mcmmo points.
                      */
                     List<String> noMcmmoSpawnReasons = plugin.getConfig().getStringList("no-mcmmo-exp");
                     if (plugin.usesmcMMO() && noMcmmoSpawnReasons.contains(entity.getMetadata("spawn-reason").get(0).toString())) {
                         newEntity.setMetadata("mcMMO: Spawned Entity", new FixedMetadataValue(Bukkit.getPluginManager().getPlugin("mcMMO"), true));
                     }
-                    /*
-                    Spawn method continuity for whole stack.
-                     */
+
+                    //Continue spawning the stack.
                     if (entity.hasMetadata("spawn-reason")) {
                         String oldSpawnReason = entity.getMetadata("spawn-reason").get(0).asString();
                         newEntity.removeMetadata("spawn-reason", plugin);
                         newEntity.setMetadata("spawn-reason", new FixedMetadataValue(plugin, oldSpawnReason));
                     }
-                    /*
-                    If the entity was in fire, or burning, then any remaining ticks left on the previous mob will be passed on to the new one.
-                     */
-                    if ((entity.getLastDamageCause().getCause() == EntityDamageEvent.DamageCause.FIRE ||
+
+                    //If the entity was in fire, or burning, then any remaining ticks left on the previous mob will be passed on to the new one.
+                    if (entity.getLastDamageCause() != null && (entity.getLastDamageCause().getCause() == EntityDamageEvent.DamageCause.FIRE ||
                             entity.getLastDamageCause().getCause() == EntityDamageEvent.DamageCause.FIRE_TICK) && plugin.getConfig().getBoolean("carry-over-fire.enabled")) {
                         if(!plugin.getConfig().getBoolean("carry-over-fire.start-new-burn")) {
                             newEntity.setFireTicks(entity.getFireTicks());
@@ -130,9 +109,8 @@ public class MobDeathListener extends MobStackerListener {
                             newEntity.setFireTicks(entity.getMaxFireTicks());
                         }
                     }
-                    /*
-                    Assign all attributes so the mob looks the same.
-                     */
+
+                    //assign attributes so the mob looks the same as the one that died.
                     if (newEntity instanceof Ageable) {
                         ((Ageable) newEntity).setAge(((Ageable) event.getEntity()).getAge());
                     }
@@ -142,20 +120,16 @@ public class MobDeathListener extends MobStackerListener {
                     if (newEntity instanceof Sheep) {
                         ((Sheep) newEntity).setSheared(((Sheep) event.getEntity()).isSheared());
                     }
-                    /*
-                    Set new meta data
-                     */
+
+                    //set new meta
                     plugin.getStackUtils().setMaxStack(newEntity, maxStack);
-                    plugin.getStackUtils().setStackSize(newEntity, newQuantity);
-                    /*
-                    If there is still a remaining stack, rename it.
-                     */
-                    if (newQuantity > 1) {
-                        plugin.getStackUtils().renameStack(newEntity, newQuantity);
+                    plugin.getStackUtils().setStackSize(newEntity, newStackSize);
+
+                    if (newStackSize > 1) {
+                        plugin.getStackUtils().renameStack(newEntity, newStackSize);
                     }
-                    /*
-                    Set search time back to normal.
-                     */
+
+                    //reset search time
                     plugin.setSearchTime(plugin.getConfig().getInt("seconds-to-try-stack") * 20);
                 }
             }
