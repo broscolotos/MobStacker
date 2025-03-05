@@ -2,7 +2,6 @@ package com.kiwifisher.mobstacker.algorithms.creatures;
 
 import com.kiwifisher.mobstacker.algorithms.Loot;
 import com.kiwifisher.mobstacker.algorithms.LootAlgorithm;
-import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 
@@ -15,8 +14,6 @@ public class RabbitLootAlgorithm implements LootAlgorithm {
     private List<Loot> dropArrayList = new ArrayList<>();
 
     public RabbitLootAlgorithm() {
-        dropArrayList.add(new Loot(Material.RABBIT, 0, 1));
-        dropArrayList.add(new Loot(Material.RABBIT_HIDE, 0, 1));
     }
 
     @Override

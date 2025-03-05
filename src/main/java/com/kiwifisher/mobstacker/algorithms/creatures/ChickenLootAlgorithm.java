@@ -12,7 +12,7 @@ import java.util.Random;
 
 public class ChickenLootAlgorithm implements LootAlgorithm {
 
-    private List<Loot> dropArrayList = new ArrayList<>();
+    private final List<Loot> dropArrayList = new ArrayList<>();
 
     public ChickenLootAlgorithm() {
         dropArrayList.add(new Loot(Material.RAW_CHICKEN, 1, 1));

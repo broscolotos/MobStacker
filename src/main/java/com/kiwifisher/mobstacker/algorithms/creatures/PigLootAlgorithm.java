@@ -12,7 +12,7 @@ import java.util.Random;
 
 public class PigLootAlgorithm implements LootAlgorithm {
 
-    private List<Loot> dropArrayList = new ArrayList<>();
+    private final List<Loot> dropArrayList = new ArrayList<>();
 
     public PigLootAlgorithm() {
         dropArrayList.add(new Loot(Material.PORK, 0, 3));

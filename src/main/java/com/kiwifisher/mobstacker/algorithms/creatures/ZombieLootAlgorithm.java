@@ -12,7 +12,7 @@ import java.util.Random;
 
 public class ZombieLootAlgorithm implements LootAlgorithm {
 
-    private List<Loot> dropArrayList = new ArrayList<>();
+    private final List<Loot> dropArrayList = new ArrayList<>();
 
     public ZombieLootAlgorithm() {
         dropArrayList.add(new Loot(Material.ROTTEN_FLESH, 0, 2));

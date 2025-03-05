@@ -12,7 +12,7 @@ import java.util.Random;
 
 public class SnowGolemLootAlgorithm implements LootAlgorithm {
 
-    private List<Loot> dropArrayList = new ArrayList<>();
+    private final List<Loot> dropArrayList = new ArrayList<>();
 
     public SnowGolemLootAlgorithm() {
         dropArrayList.add(new Loot(Material.SNOW_BALL, 0, 15));

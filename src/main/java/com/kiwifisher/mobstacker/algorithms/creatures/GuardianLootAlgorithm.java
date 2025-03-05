@@ -16,8 +16,6 @@ public class GuardianLootAlgorithm implements LootAlgorithm {
     private List<Loot> dropArrayList = new ArrayList<>();
 
     public GuardianLootAlgorithm() {
-        dropArrayList.add(new Loot(Material.PRISMARINE_SHARD, 0, 2));
-        dropArrayList.add(new Loot(Material.PRISMARINE_CRYSTALS, 0, 1));
         dropArrayList.add(new Loot(Material.RAW_FISH, 0, 1));
     }
 

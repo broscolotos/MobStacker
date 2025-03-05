@@ -12,7 +12,7 @@ import java.util.Random;
 
 public class CaveSpiderLootAlgorithm implements LootAlgorithm {
 
-    private List<Loot> dropArrayList = new ArrayList<>();
+    private final List<Loot> dropArrayList = new ArrayList<>();
 
     public CaveSpiderLootAlgorithm() {
         dropArrayList.add(new Loot(Material.STRING, 0, 2));

@@ -12,7 +12,7 @@ import java.util.Random;
 
 public class SlimeLootAlgorithm implements LootAlgorithm {
 
-    private List<Loot> dropArrayList = new ArrayList<>();
+    private final List<Loot> dropArrayList = new ArrayList<>();
 
     public SlimeLootAlgorithm() {
         dropArrayList.add(new Loot(Material.SLIME_BALL, 0, 2));

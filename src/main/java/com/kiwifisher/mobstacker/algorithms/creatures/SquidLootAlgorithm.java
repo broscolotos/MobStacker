@@ -12,7 +12,7 @@ import java.util.Random;
 
 public class SquidLootAlgorithm implements LootAlgorithm {
 
-    private List<Loot> dropArrayList = new ArrayList<>();
+    private final List<Loot> dropArrayList = new ArrayList<>();
 
     public SquidLootAlgorithm() {
         dropArrayList.add(new Loot(Material.INK_SACK, 0, 3));

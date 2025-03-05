@@ -12,7 +12,7 @@ import java.util.Random;
 
 public class IronGolemLootAlgorithm implements LootAlgorithm {
 
-    private List<Loot> dropArrayList = new ArrayList<>();
+    private final List<Loot> dropArrayList = new ArrayList<>();
 
     public IronGolemLootAlgorithm() {
         dropArrayList.add(new Loot(Material.IRON_INGOT, 3, 5));

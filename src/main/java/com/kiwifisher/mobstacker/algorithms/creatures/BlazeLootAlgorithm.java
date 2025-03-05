@@ -5,13 +5,14 @@ import com.kiwifisher.mobstacker.algorithms.LootAlgorithm;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class BlazeLootAlgorithm implements LootAlgorithm {
 
-    private List<Loot> dropArrayList = new ArrayList<>();
+    private final List<Loot> dropArrayList = new ArrayList<>();
 
     public BlazeLootAlgorithm() {
         dropArrayList.add(new Loot(Material.BLAZE_ROD, 0, 1));

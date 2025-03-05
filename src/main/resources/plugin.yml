@@ -1,7 +1,8 @@
 name: MobStacker
-main: com.kiwifisher.mobstacker.MobStacker
+api-version: 1.7.10
+version: '2.0.1'
 author: KiwiFisher
-version: 2.0.0
+main: com.kiwifisher.mobstacker.MobStacker
 softdepend: [WorldGuard, mcMMO]
 commands:
   mobstacker:

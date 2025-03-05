@@ -28,9 +28,9 @@ public enum AlgorithmEnum {
     ZOMBIE (new ZombieLootAlgorithm());
 
 
-    private LootAlgorithm lootAlgorithm;
+    private final LootAlgorithm lootAlgorithm;
 
-    private int exp;
+    private final int exp;
 
     AlgorithmEnum(LootAlgorithm lootAlgorithm) {
         this.lootAlgorithm = lootAlgorithm;

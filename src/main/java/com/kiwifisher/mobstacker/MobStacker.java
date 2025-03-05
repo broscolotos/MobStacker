@@ -1,23 +1,33 @@
 package com.kiwifisher.mobstacker;
 
+
+import java.io.*;
+import java.util.logging.Logger;
+import java.util.*;
+
+import org.bukkit.event.Listener;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.plugin.Plugin;
+
 import com.google.common.io.ByteStreams;
 import com.kiwifisher.mobstacker.commands.MobStackerCommands;
 import com.kiwifisher.mobstacker.listeners.*;
 import com.kiwifisher.mobstacker.listeners.EntityTrackListener;
 import com.kiwifisher.mobstacker.utils.StackUtils;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import org.bukkit.Bukkit;
-import org.bukkit.World;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.mcstats.Metrics;
-import java.io.*;
-import java.util.*;
 
-public class MobStacker extends JavaPlugin {
+public final class MobStacker extends JavaPlugin implements Listener {
+
+    private static final Logger LOGGER = Logger.getLogger("MobStacker");
+
+    private static FileConfiguration config;
+    public static MobStacker plugin;
 
     private boolean stacking = true;
     private boolean worldGuardEnabled;
@@ -38,6 +48,7 @@ public class MobStacker extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        plugin = this;
 
         log("MobStacker is starting");
         loadResource(this, "config.yml");
@@ -51,14 +62,6 @@ public class MobStacker extends JavaPlugin {
         this.stackUtils = new StackUtils(this);
 
         this.LAST_USED_UUID = uuidConfig.getString("last-used-UUID");
-
-        try {
-            Metrics metrics = new Metrics(this);
-            metrics.start();
-            log("Connected to metrics");
-        } catch (IOException e) {
-            log("Failed to send Metrics data");
-        }
 
         this.mcMMO = getServer().getPluginManager().isPluginEnabled("mcMMO");
 
@@ -78,19 +81,19 @@ public class MobStacker extends JavaPlugin {
             updateExcludedRegions();
         }
 
-        this.getServer().getPluginManager().registerEvents(new EntityTrackListener(this), this);
-        this.getServer().getPluginManager().registerEvents(new MobSpawnListener(this), this);
-        this.getServer().getPluginManager().registerEvents(new MobDeathListener(this), this);
-        this.getServer().getPluginManager().registerEvents(new PlayerRenameEntityListener(this), this);
-        this.getServer().getPluginManager().registerEvents(new EntityTameListener(this), this);
-        this.getServer().getPluginManager().registerEvents(new EntityExplodeListener(this), this);
-        this.getServer().getPluginManager().registerEvents(new PlayerLeashEntityListener(this), this);
-        this.getServer().getPluginManager().registerEvents(new PlayerShearEntityListener(this), this);
-        this.getServer().getPluginManager().registerEvents(new SheepDyeListener(this), this);
-        this.getServer().getPluginManager().registerEvents(new SheepRegrowWoolListener(this), this);
-        this.getServer().getPluginManager().registerEvents(new ChunkChangeListener(this), this);
+        this.getServer().getPluginManager().registerEvents(new EntityTrackListener(), this);
+        this.getServer().getPluginManager().registerEvents(new MobSpawnListener(), this);
+        this.getServer().getPluginManager().registerEvents(new MobDeathListener(), this);
+        this.getServer().getPluginManager().registerEvents(new PlayerRenameEntityListener(), this);
+        this.getServer().getPluginManager().registerEvents(new EntityTameListener(), this);
+        this.getServer().getPluginManager().registerEvents(new EntityExplodeListener(), this);
+        this.getServer().getPluginManager().registerEvents(new PlayerLeashEntityListener(), this);
+        this.getServer().getPluginManager().registerEvents(new PlayerShearEntityListener(), this);
+        this.getServer().getPluginManager().registerEvents(new SheepDyeListener(), this);
+        this.getServer().getPluginManager().registerEvents(new SheepRegrowWoolListener(), this);
+        this.getServer().getPluginManager().registerEvents(new ChunkChangeListener(), this);
 
-        getCommand("mobstacker").setExecutor(new MobStackerCommands(this));
+        getCommand("mobstacker").setExecutor(new MobStackerCommands());
 
         for (World world : getServer().getWorlds()) {
 
@@ -105,44 +108,26 @@ public class MobStacker extends JavaPlugin {
 
     @Override
     public void onDisable() {
-
         for (World world : getServer().getWorlds()) {
-
             for (Entity entity : world.getEntities()) {
-
                 if (StackUtils.hasRequiredData(entity) && !entity.getMetadata("spawn-reason").isEmpty()) {
-
                     int quantity = StackUtils.getStackSize((LivingEntity) entity);
-                    entity.setCustomName(quantity + "-" + MobStacker.RELOAD_UUID + "-" + entity.getMetadata("spawn-reason").get(0).asString());
-
+                    ((LivingEntity)entity).setCustomName(quantity + "-" + MobStacker.RELOAD_UUID + "-" + entity.getMetadata("spawn-reason").get(0).asString());
                 }
-
             }
-
         }
-
         this.uuidConfig.set("last-used-UUID", RELOAD_UUID);
         try {
             this.uuidConfig.save(getDataFolder().getAbsolutePath() + "/uuid.yml");
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         log("Thanks for using MobStacker!");
-
     }
 
-    public void removeAllStacks() {
+    public static MobStacker getInstance() { return plugin; }
 
-        for (World world : getServer().getWorlds()) {
-            for (LivingEntity entity : world.getLivingEntities()) {
-                if (StackUtils.hasRequiredData(entity)) {
-                    entity.remove();
-                }
-            }
-        }
-
-    }
+    public void log(String string) { LOGGER.info(string); }
 
     public File loadResource(Plugin plugin, String resource) {
         File folder = plugin.getDataFolder();
@@ -164,6 +149,21 @@ public class MobStacker extends JavaPlugin {
         return resourceFile;
     }
 
+    public boolean usesmcMMO() { return this.mcMMO; }
+
+    private WorldGuardPlugin initialiseWorldGuard() {
+
+        Plugin worldGuard = getServer().getPluginManager().getPlugin("WorldGuard");
+
+        if (worldGuard == null || !(worldGuard instanceof WorldGuardPlugin) || !Bukkit.getVersion().contains("1.8")) {
+            return null;
+        }
+
+        return (WorldGuardPlugin) worldGuard;
+    }
+
+    public void setUsesWorldGuard(boolean status) { worldGuardEnabled = status; }
+
     public void updateExcludedRegions() {
         try {
             Scanner scanner = new Scanner(new File(getWorldGuard().getDataFolder() + "/mobstacker-excluded-regions.yml"));
@@ -183,60 +183,33 @@ public class MobStacker extends JavaPlugin {
         for (String id : regionsArray) {
             log("Loaded in exclusions for region: " + id);
         }
-
-
     }
 
-    public boolean regionAllowedToStack(String regionID) {
-        return !regionsArray.contains(regionID);
-    }
+    public StackUtils getStackUtils() { return stackUtils; }
 
-    private WorldGuardPlugin initialiseWorldGuard() {
+    public WorldGuardPlugin getWorldGuard() { return worldGuard; }
 
-        Plugin worldGuard = getServer().getPluginManager().getPlugin("WorldGuard");
+    public void setSearchTime(int searchTime) { this.searchTime = searchTime; }
 
-        if (worldGuard == null || !(worldGuard instanceof WorldGuardPlugin) || !Bukkit.getVersion().contains("1.8")) {
-            return null;
-        }
-
-        return (WorldGuardPlugin) worldGuard;
-
-    }
-
-    public void log(String string) {
-        this.getLogger().info(string);
-    }
-
-    public boolean isStacking() {
-        return stacking;
-    }
-
-    public void setStacking(boolean bool) {
-        stacking = bool;
-    }
-
-    public void setUsesWorldGuard(boolean status) { worldGuardEnabled = status; }
+    public boolean isStacking() { return stacking; }
 
     public boolean usesWorldGuard() { return worldGuardEnabled; }
 
-    public WorldGuardPlugin getWorldGuard() { return worldGuard;}
+    public boolean regionAllowedToStack(String regionID) { return !regionsArray.contains(regionID); }
 
-    public int getSearchTime() {
-        return searchTime;
+    public String getLAST_USED_UUID() { return this.LAST_USED_UUID; }
+
+    public int getSearchTime() { return searchTime; }
+
+    public void setStacking(boolean bool) { stacking = bool; }
+
+    public void removeAllStacks() {
+        for (World world : getServer().getWorlds()) {
+            for (LivingEntity entity : world.getLivingEntities()) {
+                if (StackUtils.hasRequiredData(entity)) {
+                    entity.remove();
+                }
+            }
+        }
     }
-
-    public void setSearchTime(int searchTime) {
-        this.searchTime = searchTime;
-    }
-
-    public StackUtils getStackUtils() {
-        return stackUtils;
-    }
-
-    public boolean usesmcMMO() { return this.mcMMO; }
-
-    public String getLAST_USED_UUID() {
-        return this.LAST_USED_UUID;
-    }
-
 }

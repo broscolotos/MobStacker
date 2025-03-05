@@ -4,6 +4,7 @@ import com.kiwifisher.mobstacker.MobStacker;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.*;
+import org.bukkit.craftbukkit.v1_7_R4.entity.CraftItem;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.material.Colorable;
@@ -499,11 +500,6 @@ public class StackUtils {
             return false;
         }
 
-        // No armor stands.
-        if (!Bukkit.getVersion().contains("1.7") && entity.getType() == EntityType.ARMOR_STAND) {
-            return false;
-        }
-
         // Check if mob type is allowed to stack.
         if (!getPlugin().getConfig().getBoolean("stack-mob-type." + entity.getType().toString())) {
             return false;
@@ -536,9 +532,13 @@ public class StackUtils {
     public void reviveStacks(Entity[] entities) {
 
         for (Entity entity : entities) {
+            String name = "";
+            if (entity instanceof LivingEntity) {
+                name = ((LivingEntity)entity).getCustomName();
+            }
 
             // Check for a custom name and an approved type. If not, not an existing stack.
-            if (entity.getCustomName() == null) {
+            if (name == null || name.equalsIgnoreCase("")) {
                 continue;
             }
 
@@ -549,7 +549,7 @@ public class StackUtils {
 
 
             //getPlugin().log(MobStacker.RELOAD_UUID + " and " + getPlugin().getLAST_USED_UUID());
-            if (!entity.getCustomName().contains(MobStacker.RELOAD_UUID) && !entity.getCustomName().contains(getPlugin().getLAST_USED_UUID())) {
+            if (!name.contains(MobStacker.RELOAD_UUID) && !name.contains(getPlugin().getLAST_USED_UUID())) {
                 continue;
             }
 
@@ -557,7 +557,7 @@ public class StackUtils {
             LivingEntity living = (LivingEntity) entity;
 
             // Parse stack size from matched group (see long comment above for group selection reasoning).
-            String[] attributes = entity.getCustomName().split("-");
+            String[] attributes = name.split("-");
 
             int stackSize;
 

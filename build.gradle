@@ -1,0 +1,29 @@
+plugins {
+    id 'java'
+}
+
+group 'com.kiwifisher.mobstacker.MobStacker'
+version '2.0.1'
+
+repositories {
+    mavenCentral()
+    maven { url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+    maven { url 'https://jitpack.io' }
+    maven { url 'https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple'}
+    flatDir {
+        dirs 'lib'
+    }
+}
+
+dependencies {
+    implementation 'org.jetbrains:annotations:23.0.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
+    compileOnly name: 'spigot', version: '1.7.10-SNAPSHOT', classifier: 'b1657'
+    compileOnly name: 'worldguard-6.1'
+    compileOnly name: 'WorldEdit'
+}
+test {
+    useJUnitPlatform()
+}

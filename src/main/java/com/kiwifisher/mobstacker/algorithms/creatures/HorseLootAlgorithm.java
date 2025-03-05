@@ -12,7 +12,7 @@ import java.util.Random;
 
 public class HorseLootAlgorithm implements LootAlgorithm {
 
-    private List<Loot> dropArrayList = new ArrayList<>();
+    private final List<Loot> dropArrayList = new ArrayList<>();
 
     public HorseLootAlgorithm() {
         dropArrayList.add(new Loot(Material.LEATHER, 0, 2));

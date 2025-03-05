@@ -12,7 +12,7 @@ import java.util.Random;
 
 public class EndermanLootAlgorithm implements LootAlgorithm {
 
-    private List<Loot> dropArrayList = new ArrayList<>();
+    private final List<Loot> dropArrayList = new ArrayList<>();
 
     public EndermanLootAlgorithm() {
         dropArrayList.add(new Loot(Material.ENDER_PEARL, 0, 1));

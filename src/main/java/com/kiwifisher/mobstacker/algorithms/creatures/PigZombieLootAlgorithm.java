@@ -5,13 +5,14 @@ import com.kiwifisher.mobstacker.algorithms.LootAlgorithm;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class PigZombieLootAlgorithm implements LootAlgorithm {
 
-    private List<Loot> dropArrayList = new ArrayList<>();
+    private final List<Loot> dropArrayList = new ArrayList<>();
 
     public PigZombieLootAlgorithm() {
         dropArrayList.add(new Loot(Material.ROTTEN_FLESH, 0, 1));

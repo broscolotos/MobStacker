@@ -12,7 +12,7 @@ import java.util.Random;
 
 public class SkeletonLootAlgorithm implements LootAlgorithm {
 
-    private List<Loot> dropArrayList = new ArrayList<>();
+    private final List<Loot> dropArrayList = new ArrayList<>();
 
     public SkeletonLootAlgorithm() {
         dropArrayList.add(new Loot(Material.ARROW, 0, 2));

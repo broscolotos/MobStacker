@@ -12,7 +12,7 @@ import java.util.Random;
 
 public class CreeperLootAlgorithm implements LootAlgorithm {
 
-    private List<Loot> dropArrayList = new ArrayList<>();
+    private final List<Loot> dropArrayList = new ArrayList<>();
 
     public CreeperLootAlgorithm() {
         dropArrayList.add(new Loot(Material.SULPHUR, 0, 2));

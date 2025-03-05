@@ -18,7 +18,6 @@ public class SheepLootAlgorithm implements LootAlgorithm {
 
     public SheepLootAlgorithm() {
         dropArrayList.add(new Loot(Material.WOOL, 1, 1));
-        dropArrayList.add(new Loot(Material.MUTTON, 1, 2));
     }
 
     @Override
